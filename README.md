@@ -1,2 +1,2 @@
 # VP-OMR
-A kernel-independent SOE approximation with OMR
+A kernel-independent SOE approximation software with VP-sum and OMR. 
