@@ -8,4 +8,4 @@ For ease to use, the Julia version is coming soon. The Julia version of [VPMR](h
 # BSA-WBT
 In our paper, BSA is used for high precision SOE approximation of various inverse power kernels, including Coulomb kernel. 
 It is a quadrature method to obtain SOE/SOG as following: 
-\[ r^{-\alpha} = \frac{1}{\Gamma ( \alpha)}int_{-\infty}^{\infty}b^{\alpha x}e^{-b^x r}\, dx \approx \frac{\log(b)}{\Gamma ( \alpha)}\sum_{\ell=-\infty}^{+\infty}b^{\alpha \ell}e^{-b^\ell r} \]
+$$ r^{-\alpha} = \frac{1}{\Gamma ( \alpha)}int_{-\infty}^{\infty}b^{\alpha x}e^{-b^x r}\, dx \approx \frac{\log(b)}{\Gamma ( \alpha)}\sum_{\ell=-\infty}^{+\infty}b^{\alpha \ell}e^{-b^\ell r} $$
