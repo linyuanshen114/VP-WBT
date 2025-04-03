@@ -10,5 +10,5 @@ In our paper, BSA is used for high precision SOE approximation of various invers
 It is a quadrature method to obtain SOE/SOG as following:
 
 $$
-r^{-\alpha} = \frac{\log(b)}{\Gamma ( \alpha)}\displaystyle\int_{-\infty}^{\infty}b^{\alpha x}e^{-b^x r} dx \approx \frac{\log(b)}{\Gamma ( \alpha)}\displaystyle\sum_{\ell=-\infty}^{+\infty}b^{\alpha \ell}e^{-b^\ell r}
+r^{-\alpha} = \frac{\log(b)}{\Gamma ( \alpha)}\displaystyle\int_{-\infty}^{\infty}b^{\alpha x}e^{-b^x r} dx \approx \frac{\log(b)}{\Gamma ( \alpha)}\displaystyle\sum_{\ell=-\infty}^{+\infty}b^{\alpha \ell}e^{-b^\ell r} \approx \frac{\log(b)}{\Gamma ( \alpha)}\displaystyle\sum_{\ell=N}^{M}b^{\alpha \ell}e^{-b^\ell r}
 $$
