@@ -5,14 +5,21 @@ You could check the [reference](https://arxiv.org/abs/2503.03183) here and the f
 
 For ease to use, the Julia version is coming soon. The Julia version of [VPMR](https://github.com/HPMolSim/SumOfExpVPMR.jl) by X.Z.Gao is available here. 
 
+
+## Requirements
+
+- MATLAB R2020b or newer is recommended.
+- ⚠️[The Multiprecision Computing Toolbox](https://www.advanpix.com/) must be installed and added to your MATLAB path before running the app.
+- App Designer must be available (included in recent versions of MATLAB).
+
 ## Installation
 
-Follow the steps below to install the `VP-WBT.mlappinstall` app in MATLAB.
+Follow the steps below to install the `VP_WBT.mlappinstall` app in MATLAB.
 
 ### 1. Download from GitHub
 
 - Go to the [Releases](https://github.com/linyuanshen114/VP-WBT/releases) page of this repository.
-- Download the file named `VP-WBT.mlappinstall`.
+- Download the file named `VP_WBT.mlappinstall`.
 
 Alternatively, you can click the green **Code** button and download the entire repository as a ZIP file, then extract it and find the `.mlappinstall` file.
 
@@ -25,26 +32,31 @@ There are two common ways to install a `.mlappinstall` file in MATLAB:
 1. Open MATLAB.
 2. Run the following command in the Command Window:
    ```matlab
-   matlab.apputil.install('path_to/VP-WBT.mlappinstall')
+   matlab.apputil.install('path_to/VP_WBT.mlappinstall')
    ```
-   Replace `'path_to/VP-WBT.mlappinstall'` with the actual file path.
+   Replace `'path_to/VP_WBT.mlappinstall'` with the actual file path.
 
 #### Option B: Using MATLAB GUI
 
 1. Open MATLAB.
 2. Go to the **APPS** tab.
 3. Click on **Install App**.
-4. Select the `VP-WBT.mlappinstall` file and click **Open**.
+4. Select the `VP_WBT.mlappinstall` file and click **Open**.
 
 ### 3. Launch the App
 
-Once installed, you can find **VP-WBT** in the **APPS** tab. Click to launch and start using it.
+Once installed, you can find **VP_WBT** in the **APPS** tab. Click to launch and start using it.
 
-## Requirements
+## Usage
 
-- MATLAB R2020b or newer is recommended.
-- [The Multiprecision Computing Toolbox](https://www.advanpix.com/) must be installed and added to your MATLAB path before running the app.
-- App Designer must be available (included in recent versions of MATLAB).
+For basic software operations and usage examples, you may refer to the following guide:
+
+📄 [VPMR Readme.pdf](https://github.com/ZXGao97/VPMR/blob/main/Readme.pdf)
+
+The following example demonstrates how to use the newly added module: 
+
+
+
 
 
 # BSA-WBT
