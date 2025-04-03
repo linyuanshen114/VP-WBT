@@ -66,8 +66,16 @@ For basic software operations and usage examples, you may refer to the following
 
 The following example demonstrates how to use the newly added module: 
 
+![](figure/VP-WBT.png)
 
-
+- **`T`**: The truncation interval $[0, T]$.
+- **`Weight`**: Choose the desired weight function.
+- **`Weight Setting`**: Configure parameters for the selected weight function:
+  - **`1`**: A trivial weight function $w(t) = 1$, corresponding to Time-limited Balanced Truncation.
+  - **`(x + a).^(-1/2)`**: A weight function $w(t) = \frac{1}{\sqrt{t + a}}$. Specify the value of $a$ in `Weight Setting`.
+  - **`exp(-s.*x)`**: An exponential weight function $w(t) = e^{-st}$. Specify the value of $s$ in `Weight Setting`.
+  - **`Custom`**: Define your own weight function. Enter the expression for $w(t)$ in `Weight Setting` using MATLAB's standard function definition syntax.
+- **`MR`**: Output the MR terms. You may enter a single integer to obtain a specific SOE term, or a vector of integers to compute multiple SOE terms in one run.
 
 
 # BSA-WBT
