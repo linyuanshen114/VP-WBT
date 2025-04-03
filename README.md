@@ -1,3 +1,12 @@
+# 📚 Table of Contents
+
+- [VP-WBT](#vp-wbt)  
+  *A MATLAB App for kernel-independent SOE/SOG approximation.*
+  
+- [BSA-WBT](#bsa-wbt)  
+  *A script-based tool for high-precision SOE approximation of inverse power kernels using the BSA quadrature method.*
+
+
 # VP-WBT
 A kernel-independent SOE/SOG approximation software with VP-sum and WBT, whose high precision computing is powered by [the Multiprecision Computng Toolbox](https://www.advanpix.com/). 
 
