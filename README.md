@@ -43,6 +43,8 @@ There are two common ways to install a `.mlappinstall` file in MATLAB:
 3. Click on **Install App**.
 4. Select the `VP_WBT.mlappinstall` file and click **Open**.
 
+Alternatively, if you prefer to run the code manually, the source file `VP_WBT.m` is available in the `src` folder and can be executed directly from the MATLAB editor or command window.
+
 ### 3. Launch the App
 
 Once installed, you can find **VP_WBT** in the **APPS** tab. Click to launch and start using it.
@@ -66,3 +68,5 @@ It is a quadrature method to obtain SOE/SOG as following:
 $$
 r^{-\alpha} = \frac{\log(b)}{\Gamma ( \alpha)}\displaystyle\int_{-\infty}^{\infty}b^{\alpha x}e^{-b^x r} dx \approx \frac{\log(b)}{\Gamma ( \alpha)}\displaystyle\sum_{\ell=-\infty}^{+\infty}b^{\alpha \ell}e^{-b^\ell r} \approx \frac{\log(b)}{\Gamma ( \alpha)}\displaystyle\sum_{\ell=N}^{M}b^{\alpha \ell}e^{-b^\ell r}
 $$
+
+The main executable script `BSA_WBT.m`, located in the `src` folder, implements the BSA method and can be used to reproduce the results presented in the paper.
