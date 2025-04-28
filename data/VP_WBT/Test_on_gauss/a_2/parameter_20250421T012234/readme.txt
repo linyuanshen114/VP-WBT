@@ -1,0 +1,12 @@
+function=exp(-x.^2)--SOE
+n=100
+T=Inf
+scale/n=0.05
+digits=500
+step=0.001
+xmin=0
+xmax=100
+Weight Function=1
+Weight Setting=
+MRterms=16
+Maxerror=5.20285e-14

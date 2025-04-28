@@ -65,17 +65,17 @@ EWA = exp(10*AA);
 
 % Sine all weights are positive, P=Q, which means it only needs decompose P. 
 % Preparing P
-% the Classical MR
-% P = P./AA;
+% % the Classical MR
+P = P./AA;
 
 % Time-limited Balanced Truncation; w(t)=1
 % P = P.*(1 - EA.'*EA)./AA;
 
 % Weighted Balanced Truncation
 % Weight function w(t) = (r+10)^(-1/2)
-ggt = expint(AA*(T+10));
-gg0 = expint(AA*(10));
-P = P.*EWA.*(gg0-ggt);
+% ggt = expint(AA*(T+10));
+% gg0 = expint(AA*(10));
+% P = P.*EWA.*(gg0-ggt);
 
 %SVD 
 [U,S,V] = svd(P);
@@ -85,13 +85,13 @@ Bt = U'* B;
 
 %% Consturcting reduced SOE
 
-n = 12;
-error = zeros(1,12);
-folder = 'BSA_alpha_1_WBT';
-if ~exist(folder, 'dir')
-    mkdir(folder);
-end
-for p = 24:35
+n = 40;
+error = zeros(1,40);
+% folder = 'BSA_alpha_1_WBT';
+% if ~exist(folder, 'dir')
+%     mkdir(folder);
+% end
+for p = 161:200
     Ad = At(1:p, 1:p);
     Bd = Bt(1:p);
 
@@ -104,18 +104,18 @@ for p = 24:35
     w_nr = B_mr.^2;
     w_nr = w_nr.'; % new w
     w_nr = w_nr.*exp(0.9*s_nr.'); % shift back
-    filename = sprintf('%s/p_%d_mp.mat', folder, p);
-    save(filename, 's_nr', 'w_nr'); % save as high precision
-
-    filename = sprintf('%s/p_%d_double.mat', folder, p);
-    s_d = double(s_nr);
-    w_d = double(w_nr);
-    save(filename, "s_d","w_d");  % save as double
+    % filename = sprintf('%s/p_%d_mp.mat', folder, p);
+    % save(filename, 's_nr', 'w_nr'); % save as high precision
+    % 
+    % filename = sprintf('%s/p_%d_double.mat', folder, p);
+    s_d = mp(s_nr,20);
+    w_d = mp(w_nr,20);
+    % save(filename, "s_d","w_d");  % save as double
 
     x = 1:0.01:1024;
     x = x.';
-    y1 = exp(-x*s_nr)*w_nr;
+    y1 = exp(-x*s_d)*w_d;
     merror = abs(y1- 1 ./(x));% alpha = 1
-    error(p-23) = max(merror);% save maximum error
+    error(p-160) = max(merror);% save maximum error
 end
 

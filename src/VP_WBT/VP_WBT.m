@@ -1729,7 +1729,7 @@ classdef VP_WBT < matlab.apps.AppBase
                 set(handles.text12,'string','Preparing T');drawnow;
                 set(handles.text11,'string','(9/12)');drawnow;
                 T=mp(Lc,digitts)*mp(U,digitts)*mp(diag(LLL),digitts);
-                InvT = mp(diag(LLL),digitts)*mp(V.',digitts)*mp(Q.',digitts);
+                InvT = mp(diag(LLL),digitts)*mp(V',digitts)*mp(Q',digitts);
                 set(handles.text12,'string','Preparing Anew');drawnow;
                 set(handles.text11,'string','(10/12)');drawnow;
                 Anew=mp(InvT,digitts)*mp(A,digitts)*mp(T,digitts);
