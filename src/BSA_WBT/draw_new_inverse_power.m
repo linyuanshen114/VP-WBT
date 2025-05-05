@@ -12,49 +12,50 @@ s_wbt = [4.551547331769476e-10,2.967225833661697e-10,1.69007319959171e-10,7.5494
 w_wbt = [4.955235574250308e-6,4.503807233967136e-6, 5.145266724826999e-6, 6.175199783823309e-6, 5.849337004446485e-6];
 
 
-h = 0.40994422603935795;
-tau = 0.192967891816239;
+% h = 0.40994422603935795;
+% tau = 0.192967891816239;
 % h = mp(h,d);
 % tau = mp(tau,d);
-
+b = 1.22749083347315613;
+sigma = 0.90802447499108738;
 num = -51:86;
 % num = mp(num,d);
 % w_rest = h./gamma(1/2).*mp(exp((h.*num-tau)/2),d);
 % s_rest = mp(exp(h.*num - tau),d);
-w_rest = h./gamma(1/2).*exp((h.*num-tau)/2);
-s_rest = exp(h.*num - tau);
-s = [eta,s_rest];
-w = [weta,w_rest];
+w_rest = 2*sigma*log(b)./gamma(1/2).*b.^num;
+s_rest = b.^(2*num).*sigma^2;
+% s = [eta,s_rest];
+% w = [weta,w_rest];
 s_wbt = [s_wbt,s_rest];
 w_wbt = [w_wbt, w_rest];
 % s = s_rest;
 % w = w_rest;
 %% 
 x = [];
-for i=-8:3
+for i=-7:3
     x = [x,linspace(10^(i),10^(i+1),1000)];
 end
-x = [x,linspace(10^(4),10^(5),1000)];
-x = [x,linspace(10^(5),10^(6),1000)];
+x = [x,linspace(10^(4),10^(5),1000000)];
+% x = [x,linspace(10^(5),10^(6),10000)];
 %% 
 x = x.';
 xx = x.^2;
 %% 
 
-sog = exp(-xx*s)*w.';
+% sog = exp(-xx*s)*w.';
 sog_wbt = exp(-xx*s_wbt)*w_wbt.';
-error = abs(sog-1./x);
+% error = abs(sog-1./x);
 error_wbt = abs(sog_wbt - 1./x);
 
 %% 
 
-rel_beylkin_error = error.*x;
+% rel_beylkin_error = error.*x;
 rel_wbt_error = error_wbt.*x;
 % loglog(x,rel_beylkin_error,'b-', 'LineWidth', 2);
 % hold on;
-loglog(x, rel_wbt_error,'r-', 'LineWidth', 2);
-xlabel('r');
-ylabel('Relative Error');
-xlim([10^(-8),10^(6)]);
-% legend('Benchmark', 'WBT', 'Location', 'Best');  % 'Location' 参数可以调整图例在图中的位置
-hold off;
+% loglog(x, rel_wbt_error,'r-', 'LineWidth', 2);
+% xlabel('r');
+% ylabel('Relative Error');
+% xlim([10^(-8),10^(6)]);
+% % legend('Benchmark', 'WBT', 'Location', 'Best');  % 'Location' 参数可以调整图例在图中的位置
+% hold off;

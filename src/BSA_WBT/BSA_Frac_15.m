@@ -1,6 +1,6 @@
 %% Setting up BSA parameters.
-mp.Digits(400) % Setting precision of 400 digits.
-b = mp(1.09);
+mp.Digits(500) % Setting precision of 500 digits.
+b = mp(1.08);
 
 % transform to [1, T/dt]
 
@@ -8,19 +8,19 @@ b = mp(1.09);
 
 %Experiment 1, [1, 1e+3]
 % the initial precision is about 1e-14.
-M = 40;
-N = -450;
-dt = 1e-3;
-x = [];
-for i=0:2
-    x = [x,linspace(10^(i),10^(i+1),10000)];
-end
-x = x.';
-xo = [];
-for i=-3:-1
-    xo = [xo,linspace(10^(i),10^(i+1),10000)];
-end
-xo = xo.';
+% M = 50;
+% N = -450;
+% dt = 1e-3;
+% x = [];
+% for i=0:2
+%     x = [x,linspace(10^(i),10^(i+1),10000)];
+% end
+% x = x.';
+% xo = [];
+% for i=-3:-1
+%     xo = [xo,linspace(10^(i),10^(i+1),10000)];
+% end
+% xo = xo.';
 
 %Experiment 2, [1, 1e+4]
 % the initial precision is about 2e-16.
@@ -40,28 +40,29 @@ xo = xo.';
 
 %Experiment 3, [1, 1e+5]
 % the initial precision is about 2e-16.
-% M = 50;
-% N = -450;
-% dt = 1e-5;
-% x = [];
-% for i=0:4
-%     x = [x,linspace(10^(i),10^(i+1),10000)];
-% end
-% x = x.';
-% xo = [];
-% for i=-5:-1
-%     xo = [xo,linspace(10^(i),10^(i+1),10000)];
-% end
-% xo = xo.';
+M = 70;
+N = -550;
+dt = 1e-5;
+ddt = 1e-4;
+x = [];
+for i=-1:3
+    x = [x,linspace(10^(i),10^(i+1),10000)];
+end
+x = x.';
+xo = [];
+for i=-5:-1
+    xo = [xo,linspace(10^(i),10^(i+1),10000)];
+end
+xo = xo.';
 
 %Experiment 4, [1, 1e+6]
 % the initial precision is about 2e-16.
-% M = 50;
-% N = -500;
+% M = 60;
+% N = -640;
 % dt = 1e-6;
 % x = [];
 % for i=0:5
-%     x = [x,linspace(10^(i),10^(i+1),10000)];
+%     x = [x,linspace(10^(i),10^(i+1),1000)];
 % end
 % x = x.';
 % xo = [];
@@ -70,21 +71,21 @@ xo = xo.';
 % end
 % xo = xo.';
 %% Preparing initial SOE.
-% alpha = 1
+a = 1.5;
 s = b.^(N:M); % initial s
-w = log(b).*(b.^((N:M)*1.2)).'/gamma(1.2); % initial w
+w = log(b).*(b.^((N:M)*a)).'/gamma(a); % initial w
 
 
 
 % Testing the error of initial SOE. 
-% y = exp(-x*s)*w;
-% func = 1 ./x.^(1.2);
-% error_original = abs(y - func);
-% max(error_original)
+y = exp(-x*s)*w;
+func = 1 ./x.^(1.5);
+error_original = abs(y - func);
+max(error_original)
 %% 
 % To emphasize the near-origin singularity, shift the SOE a little more. 
 % Otherwise the accuracy near 1 can be hard to maintian.
-ww = w.*exp(-0.9*s.');
+ww = w.*exp(-0.09*s.');
 
 % Preparing A and B. 
 A = diag(-s);
@@ -92,7 +93,7 @@ B = sqrt(abs(ww));
 
 %% Model Reduction.
 n = length(s);
-T = 1e3 /2;
+T = 1e4 /2;
 P = B*B.';
 AA = s.' + s;
 EA = exp(-T*s);
@@ -108,7 +109,7 @@ EA = exp(-T*s);
 
 % Weighted Balanced Truncation
 % Weight function w(t) = (r+10)^(-1/2)
-K = 5;
+K = 10;
 EWA = exp(K*AA);
 ggt = expint(AA*(T+K));
 gg0 = expint(AA*(K));
@@ -121,7 +122,7 @@ At = U.'*A*U;
 Bt = U'* B;
 
 %% 
-p = 15;
+p = 40;
 Ad = At(1:p, 1:p);
 Bd = Bt(1:p);
 
@@ -133,7 +134,7 @@ B_mr = Bd'*V;
 
 w_nr = B_mr.^2;
 w_nr = w_nr.'; % new w
-w_nr = w_nr.*exp(0.9*s_nr.'); % shift back
+w_nr = w_nr.*exp(0.09*s_nr.'); % shift back
 % filename = sprintf('%s/p_%d_mp.mat', folder, p);
 % save(filename, 's_nr', 'w_nr'); % save as high precision
 % 
@@ -144,17 +145,17 @@ s_d = double(s_nr);
 w_d = double(w_nr);
 % save(filename, "s_d","w_d");  % save as double
 y1 = exp(-x*s_d)*w_d;
-merror = abs(y1- 1 ./(x).^(1.2));% alpha = 1
+merror = abs(y1- 1 ./(x).^(1.5));% alpha = 1
 loglog(x,merror)
 
 %% 
 
 % T=1;
-yo = 1 ./(xo).^(1.2);
+yo = 1 ./(xo).^(1.5);
 
 n = 50;
 error = zeros(1,50);
-folder = 'BSA_alpha_12_dt1e_5_T1_WBT';
+folder = 'BSA_alpha_15_dt1e_5_T1_WBT';
 if ~exist(folder, 'dir')
     mkdir(folder);
 end
@@ -177,8 +178,8 @@ for p = 10:60
     filename = sprintf('%s/p_%d_double.mat', folder, p);
     % s_d = mp(s_nr,20);
     % w_d = mp(w_nr,20);
-    s_nr = s_nr/dt;
-    w_nr = w_nr/dt^1.2;
+    s_nr = s_nr/ddt;
+    w_nr = w_nr/ddt^1.5;
     s_d = double(s_nr);
     w_d = double(w_nr);
 
@@ -194,9 +195,9 @@ save(filename, "error");
 
 %% 
 
-plot(20:70, log10(errorT1_wbt_k5_1));
+plot(10:60, log10(errorT1_wbt_k5_1));
 xlabel('p')
 ylabel('log10(Maximum AbsError)')
 legend('WBT, w(r) = 1/sqrt(r+5)', 'Location', 'Best');  % 'Location' 参数可以调整图例在图中的位置
-title('alpha = 0.2, dt=1e-5, T = 1')
+title('alpha = 0.5, dt=1e-6, T = 1')
 hold off;

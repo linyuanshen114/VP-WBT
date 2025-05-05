@@ -1,20 +1,20 @@
-% load("F:\VP-OMR\src\HSVD\s_32.mat")
+  % load("F:\VP-OMR\src\HSVD\s_32.mat")
 % load("F:\VP-OMR\src\HSVD\w_32.mat")
 clc
 clear
 format long
 global d
 T = 10;         % 计算区间 [0, T]
-N = 7500;         % 采样参数 (总采样点为 2N+1)
+N = 800;         % 采样参数 (总采样点为 2N+1)
 % tol = 1e-10;    % 奇异值截断阈值
 r = 16;
-L = 100;
+Lambda = 50;
 shift = 0;
 % d = 100;
 % mp(d);
 
-fHandle = @(t) erf(L*(t+1e-16))./(t+1e-16);  
-fTest = @(t) erf(L*(t+1e-16))./(t+1e-16);
+fHandle = @(t) erf(Lambda*(t+1e-16))./(t+1e-16);  
+fTest = @(t) erf(Lambda*(t+1e-16))./(t+1e-16);
 %% 
 
 % n1 = 1; n2 = 30;
@@ -46,16 +46,20 @@ fTest = @(t) erf(L*(t+1e-16))./(t+1e-16);
 % ylabel('log10(Maximum AbsError)')
 
 %%
-n1 = 1; n2 = 36;
+n1 = 1; n2 = 50;
+N = 11000;
+h = T/(2*N);
+L = 25;
+
 maxerror_list = n1:n2;
 tGrid =linspace(0, T,100000);    % 在 [0,T] 上取 1000 个点进行评估
 fExact = fTest(tGrid);  
-tSamples = linspace(-shift, T, 2*N + 1).';
+tSamples = h*((-2*L):(2*N)).';
 tSamples_pos = tSamples(tSamples >= 0);
 % ySamples = fHandle(tSamples);
 ySamples_pos = fHandle(tSamples_pos);
 H = tSamples + tSamples.';
-H = H(1:N+1,1:N+1);
+H = H(1:L+N+1,1:L+N+1);
 H = fHandle(H);
 
 % 3. 对 Hankel 矩阵做 SVD, 并根据 tol 截断
@@ -78,8 +82,8 @@ for r= n1:n2
     % 4. 构造 U^(+) 和 U^(-)，并解特征值问题
     % --------------------------------------
     % 令 U^(+)=U_r(1:N,:), U^(-)=U_r(2:N+1,:)
-    Uplus = U_r(1:N, :);      % 大小: N x r
-    Uminus = U_r(2:N+1, :);   % 大小: N x r
+    Uplus = U_r(1:(L+N), :);      % 大小: N x r
+    Uminus = U_r(2:(L+N+1), :);   % 大小: N x r
     
     % 矩阵 pencil 方法: Z = pinv(Uplus) * Uminus
     Z = pinv(Uplus) * Uminus; % 尺寸: r x r
@@ -88,7 +92,7 @@ for r= n1:n2
     [EigVec, EigValMat] = eig(Z);  % Z*w = lambda*w
     lambda = diag(EigValMat);     
     
-    dt = (T + shift)/ (2*N);
+    dt = h;
     alpha = (1/dt) * log(lambda);
     Vmat = exp(tSamples_pos*(alpha.'));
     
@@ -113,7 +117,86 @@ end
 %% 
 
 plot(n1:n2, log10(maxerror_list))
+% plot(tGrid, absError)
 
+%% 
+n1 = 1; n2 = 50;
+h = 0.001;
+L = 50;
+N = 5000;
+shift = 2*L*h;
+maxerror_list = n1:n2;
+tGrid =linspace(0, T,100000);    % 在 [0,T] 上取 1000 个点进行评估
+ftest_shift = @(t)fTest(t + shift);
+fhandle_shift = @(t)fHandle(t - shift);
+fExact = fTest(tGrid);  
+tSamples = h*((-2*L):(2*N)).';
+tSamples_pos = tSamples(tSamples >= 0);
+tSamples = tSamples + shift;
+tSamples_pos = tSamples_pos + shift;
+% ySamples = fHandle(tSamples);
+ySamples_pos = fhandle_shift(tSamples_pos);
+H = tSamples + tSamples.';
+H = H(1:L+N+1,1:L+N+1);
+H = fhandle_shift(H);
+
+% 3. 对 Hankel 矩阵做 SVD, 并根据 tol 截断
+% --------------------------------------
+[Uh, Sh, V] = svd(H, 'econ');      % H = U*S*V',  'econ'可节省空间
+sVals = diag(Sh);                 % 奇异值向量
+sMax = sVals(1);                 % 最大奇异值
+    % idx = find(sVals > tol * sMax);  % 保留的奇异值下标
+    % r = length(idx);
+for r= n1:n2
+    U_r = Uh(:, 1:r);
+    
+    if r == 0
+        % 如果所有奇异值都很小, 说明函数非常接近 0
+        alpha = [];
+        c = [];
+        return;
+    end
+    
+    % 4. 构造 U^(+) 和 U^(-)，并解特征值问题
+    % --------------------------------------
+    % 令 U^(+)=U_r(1:N,:), U^(-)=U_r(2:N+1,:)
+    Uplus = U_r(1:L+N, :);      % 大小: N x r
+    Uminus = U_r(2:L+N+1, :);   % 大小: N x r
+    
+    % 矩阵 pencil 方法: Z = pinv(Uplus) * Uminus
+    Z = pinv(Uplus) * Uminus; % 尺寸: r x r
+    
+    % 解特征值问题
+    [EigVec, EigValMat] = eig(Z);  % Z*w = lambda*w
+    lambda = diag(EigValMat);     
+    
+    dt = h;
+    alpha = (1/dt) * log(lambda);
+    Vmat = exp(tSamples_pos*(alpha.'));
+    
+    % 求解 c, 使得 Vmat * c ~ ySamples
+    c = pinv(Vmat)*ySamples_pos; 
+    alpha = double(alpha);
+    c = double(c);
+    % 计算近似值: fApprox(t) = sum_{k=1}^{r} c_k * exp(alpha_k*t)
+    fApprox = zeros(size(tGrid));
+    for k = 1:r
+        fApprox = fApprox + c(k) * exp(alpha(k) * (tGrid+shift));
+    end
+
+    absError = abs(fExact - real(fApprox));
+    relError = abs(fExact - real(fApprox)) ./ abs(fExact);
+
+    % 计算在整个区间上的最大相对误差
+    maxRelError = max(relError);
+    maxAbsError = max(absError);
+    maxerror_list(r-n1+1) = maxAbsError;
+end
+
+%% 
+plot(n1:n2, log10(maxerror_list))
+%% 
+plot(tGrid,absError)
 %% 
 % r=n2;
 % [alpha, c, r] = HSVD(fTest,shift, N, T, r); 
@@ -150,7 +233,7 @@ alpha = double(alpha);
 c = double(c);
 fApprox = zeros(size(tGrid));
 for k = 1:r
-    fApprox = fApprox + c(k) * exp(alpha(k) * tGrid);
+    fApprox = fApprox + c(k) * exp(alpha(k) * (tGrid));
 end
 
 absError = abs(fExact - real(fApprox));
